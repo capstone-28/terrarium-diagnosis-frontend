@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 25% 10%;
+    --foreground: 210 20% 90%;
+
+    --card: 220 25% 13%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 220 25% 13%;
+    --popover-foreground: 210 20% 90%;
+
+    --primary: 170 80% 50%;
+    --primary-foreground: 220 25% 10%;
+
+    --secondary: 220 20% 18%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 220 20% 16%;
+    --muted-foreground: 215 15% 55%;
+
+    --accent: 45 100% 60%;
+    --accent-foreground: 220 25% 10%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 170 80% 50%;
+
+    --radius: 0.5rem;
+
+    --success: 150 70% 45%;
+    --warning: 35 95% 55%;
+    --danger: 0 75% 55%;
+    --info: 200 80% 55%;
+    --orange: 25 95% 55%;
+    --purple: 270 60% 60%;
+    --cyan: 185 80% 55%;
+
+    --sidebar-background: 220 28% 11%;
+    --sidebar-foreground: 210 20% 80%;
+    --sidebar-primary: 170 80% 50%;
+    --sidebar-primary-foreground: 220 25% 10%;
+    --sidebar-accent: 220 20% 16%;
+    --sidebar-accent-foreground: 210 20% 85%;
+    --sidebar-border: 220 20% 18%;
+    --sidebar-ring: 170 80% 50%;
+
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Noto Sans KR', sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: var(--font-sans);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer components {
+  .glow-green {
+    box-shadow: 0 0 12px hsl(var(--success) / 0.3);
+  }
+  .glow-cyan {
+    box-shadow: 0 0 12px hsl(var(--cyan) / 0.3);
+  }
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+  }
+  .sensor-card {
+    @apply rounded-lg p-4 border transition-all duration-300;
+    background: hsl(var(--card));
+    border-color: hsl(var(--border));
+  }
+  .sensor-card:hover {
+    border-color: hsl(var(--primary) / 0.4);
+  }
+  .log-entry {
+    @apply flex items-start gap-3 py-2.5 px-3 text-sm border-b border-border/50;
+  }
+}
