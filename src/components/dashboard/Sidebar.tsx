@@ -1,5 +1,6 @@
-import { Shield, Thermometer, Wind, Droplets, Sun } from "lucide-react";
+import { Shield, Thermometer, Wind, Droplets, Sun, Egg } from "lucide-react";
 import { useSimulation } from "@/hooks/useSimulation";
+import { useAnimalMode } from "@/hooks/useAnimalMode";
 
 const SensorItem = ({
   icon: Icon,
@@ -32,29 +33,38 @@ const SensorItem = ({
 
 export const Sidebar = () => {
   const { current } = useSimulation();
+  const { profile, openModal, animalMode } = useAnimalMode();
 
   const stateColor = current.state === "normal" ? "text-success" : current.state === "warning" ? "text-warning" : current.state === "device_fault" ? "text-purple-400" : "text-danger";
   const stateLabel = current.state === "normal" ? "Normal (정상)" : current.state === "warning" ? "Warning (경고)" : current.state === "device_fault" ? "Device Fault (장치이상)" : "Critical (위험)";
   const dotColor = current.state === "normal" ? "bg-success" : current.state === "warning" ? "bg-warning" : current.state === "device_fault" ? "bg-purple-400" : "bg-danger";
 
+  const BrandIcon = animalMode === "lizard" ? Shield : Egg;
+
   return (
     <aside className="w-60 min-h-screen bg-sidebar border-r border-sidebar-border flex flex-col p-3 gap-3 overflow-y-auto">
-      <div className="flex items-center gap-2 pb-2 border-b border-border">
-        <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
-          <Shield className="w-4 h-4 text-primary" />
+      <button
+        onClick={openModal}
+        className="flex items-center gap-2 pb-2 border-b border-border hover:bg-secondary/50 rounded-md transition-colors p-1 -m-1 text-left"
+        title="클릭하여 모드 전환"
+      >
+        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${animalMode === "lizard" ? "bg-primary/20" : "bg-amber-500/20"}`}>
+          <BrandIcon className={`w-4 h-4 ${animalMode === "lizard" ? "text-primary" : "text-amber-500"}`} />
         </div>
         <div>
-          <h1 className="text-sm font-bold text-foreground">LizardGuard</h1>
-          <p className="text-[9px] text-muted-foreground">열환경 불일치 조기 진단 시스템</p>
+          <h1 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+            {profile.icon} {profile.name}
+          </h1>
+          <p className="text-[9px] text-muted-foreground">{profile.subtitle}</p>
         </div>
-      </div>
+      </button>
 
       <div className="sensor-card !p-3">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[10px] font-mono font-semibold text-foreground">ESP32-NODE-001</span>
           <span className="text-[10px] text-primary">● 연결됨</span>
         </div>
-        <p className="text-[9px] text-muted-foreground">비어디드래곤 사육장 #1 · 가동 3일 14시간</p>
+        <p className="text-[9px] text-muted-foreground">{profile.nodeLabel} · 가동 3일 14시간</p>
         <p className="text-[9px] text-muted-foreground">heartbeat: {current.timestamp.getHours() >= 12 ? "오후" : "오전"} {current.timestamp.getHours().toString().padStart(2,"0")}:{current.timestamp.getMinutes().toString().padStart(2,"0")}:{current.timestamp.getSeconds().toString().padStart(2,"0")}</p>
       </div>
 
@@ -73,23 +83,23 @@ export const Sidebar = () => {
 
       <div>
         <p className="text-[10px] text-muted-foreground mb-1">센서 상태 (4채널)</p>
-        <SensorItem icon={Thermometer} label="표면 온도" value={current.hotSurface.toFixed(1)} unit="°C" statusLevel={current.sensorHealth.surface !== "normal" ? 2 : current.lSafety} />
-        <SensorItem icon={Wind} label="온열 공기" value={current.hotAir.toFixed(1)} unit="°C" statusLevel={current.sensorHealth.hotAir !== "normal" ? 2 : 0} />
-        <SensorItem icon={Droplets} label="냉각 공기" value={current.coolAir.toFixed(1)} unit="°C" statusLevel={current.sensorHealth.coolAir !== "normal" ? 2 : 0} />
-        <SensorItem icon={Sun} label="열원 (조도)" value={current.heaterOn ? "ON" : "OFF"} unit="" statusLevel={current.sensorHealth.heater !== "normal" ? 2 : 0} />
+        <SensorItem icon={Thermometer} label={profile.surfaceLabel} value={current.hotSurface.toFixed(1)} unit="°C" statusLevel={current.sensorHealth.surface !== "normal" ? 2 : current.lSafety} />
+        <SensorItem icon={Wind} label={profile.hotAirLabel} value={current.hotAir.toFixed(1)} unit="°C" statusLevel={current.sensorHealth.hotAir !== "normal" ? 2 : 0} />
+        <SensorItem icon={Droplets} label={profile.coolAirLabel} value={current.coolAir.toFixed(1)} unit="°C" statusLevel={current.sensorHealth.coolAir !== "normal" ? 2 : 0} />
+        <SensorItem icon={Sun} label={profile.heaterLabel} value={current.heaterOn ? "ON" : "OFF"} unit="" statusLevel={current.sensorHealth.heater !== "normal" ? 2 : 0} />
       </div>
 
       <div className="sensor-card !p-3">
         <p className="text-[10px] text-muted-foreground mb-1.5">진단 기준값</p>
         <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 text-[10px]">
           <span className="text-muted-foreground">T_surface_warn</span>
-          <span className="font-mono text-warning text-right">43°C</span>
+          <span className="font-mono text-warning text-right">{profile.surfaceWarn}°C</span>
           <span className="text-muted-foreground">T_surface_crit</span>
-          <span className="font-mono text-danger text-right">48°C</span>
+          <span className="font-mono text-danger text-right">{profile.surfaceCrit}°C</span>
           <span className="text-muted-foreground">G_warn</span>
-          <span className="font-mono text-warning text-right">8°C</span>
+          <span className="font-mono text-warning text-right">{profile.gradientWarn}°C</span>
           <span className="text-muted-foreground">G_crit</span>
-          <span className="font-mono text-danger text-right">5°C</span>
+          <span className="font-mono text-danger text-right">{profile.gradientCrit}°C</span>
           <span className="text-muted-foreground">전이 기준</span>
           <span className="font-mono text-foreground text-right">2회 연속</span>
           <span className="text-muted-foreground">복귀 기준</span>

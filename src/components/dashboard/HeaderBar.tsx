@@ -1,12 +1,14 @@
 import { Settings, Maximize2, Radio } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSimulation } from "@/hooks/useSimulation";
+import { useAnimalMode } from "@/hooks/useAnimalMode";
 
 export const HeaderBar = () => {
   const [now, setNow] = useState(new Date());
   const navigate = useNavigate();
   const { current } = useSimulation();
+  const { profile } = useAnimalMode();
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
@@ -61,7 +63,7 @@ export const HeaderBar = () => {
           <span className={current.gradient >= 8 ? "text-success font-medium" : current.gradient >= 5 ? "text-warning font-medium" : "text-danger font-medium"}>
             {current.gradient >= 8 ? "정상" : current.gradient >= 5 ? "경고" : "위험"}
           </span>
-          <span>열원 <span className={`font-mono font-semibold ${current.heaterOn ? "text-success" : "text-danger"}`}>{current.heaterOn ? "ON" : "OFF"}</span></span>
+          <span>{profile.heaterLabel} <span className={`font-mono font-semibold ${current.heaterOn ? "text-success" : "text-danger"}`}>{current.heaterOn ? "ON" : "OFF"}</span></span>
         </div>
       </div>
 
