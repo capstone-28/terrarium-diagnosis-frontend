@@ -1,6 +1,7 @@
 import { ArrowUpRight, Minus } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 import { useSimulation } from "@/hooks/useSimulation";
+import { useAnimalMode } from "@/hooks/useAnimalMode";
 
 interface TempCardProps {
   icon: string;
@@ -72,6 +73,7 @@ const TempCard = ({ icon, iconColor, title, subtitle, value, rangeLabel, rangeVa
 
 export const TemperatureCards = () => {
   const { current, sparkSurface, sparkHotAir, sparkCoolAir } = useSimulation();
+  const { profile } = useAnimalMode();
 
   const surfaceStatus = current.lSafety === 0 ? { label: "정상 범위", bg: "bg-success/15", text: "text-success" } :
                         current.lSafety === 1 ? { label: "경고 범위", bg: "bg-warning/15", text: "text-warning" } :
@@ -80,28 +82,28 @@ export const TemperatureCards = () => {
   return (
     <div className="grid grid-cols-3 gap-4">
       <TempCard
-        icon="🔥"
-        iconColor="text-orange"
-        title="온열 구역 표면"
-        subtitle="열원 접촉 표면 온도"
+        icon={profile.mode === "lizard" ? "🔥" : "🐥"}
+        iconColor={profile.mode === "lizard" ? "text-orange" : "text-amber-500"}
+        title={profile.surfaceLabel}
+        subtitle={profile.mode === "lizard" ? "열원 접촉 표면 온도" : "바닥 보온 온도"}
         value={current.hotSurface}
         rangeLabel={surfaceStatus.label}
-        rangeValue="T_surface_warn 43°C"
+        rangeValue={profile.surfaceRange}
         rangeBg={surfaceStatus.bg}
         rangeText={surfaceStatus.text}
         sparkColor="#2dd4a0"
         sparkData={sparkSurface}
-        warnThreshold="43°C"
-        critThreshold="48°C"
+        warnThreshold={`${profile.surfaceWarn}°C`}
+        critThreshold={`${profile.surfaceCrit}°C`}
       />
       <TempCard
         icon="🌡"
         iconColor="text-warning"
-        title="온열 구역 공기"
-        subtitle="온열 구역 대표 높이 공기"
+        title={profile.hotAirLabel}
+        subtitle={profile.mode === "lizard" ? "온열 구역 대표 높이 공기" : "육추 구역 대표 높이 공기"}
         value={current.hotAir}
         rangeLabel="정상 범위"
-        rangeValue="35°C / 40°C"
+        rangeValue={profile.hotAirRange}
         rangeBg="bg-warning/15"
         rangeText="text-warning"
         sparkColor="#f59e0b"
@@ -110,11 +112,11 @@ export const TemperatureCards = () => {
       <TempCard
         icon="❄"
         iconColor="text-cyan"
-        title="냉각 구역 공기"
-        subtitle="냉각 구역 대표 높이 공기"
+        title={profile.coolAirLabel}
+        subtitle={profile.mode === "lizard" ? "냉각 구역 대표 높이 공기" : "외곽 구역 대표 높이 공기"}
         value={current.coolAir}
         rangeLabel="정상 범위"
-        rangeValue="24°C / 32°C"
+        rangeValue={profile.coolAirRange}
         rangeBg="bg-success/15"
         rangeText="text-success"
         sparkColor="#22d3ee"
