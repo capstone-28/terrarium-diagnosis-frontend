@@ -1,6 +1,9 @@
-import { Shield, Thermometer, Wind, Droplets, Sun, Egg } from "lucide-react";
+import { Shield, Thermometer, Wind, Droplets, Sun, Egg, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { useSimulation } from "@/hooks/useSimulation";
 import { useAnimalMode } from "@/hooks/useAnimalMode";
+import { useAuth } from "@/hooks/useAuth";
 
 const SensorItem = ({
   icon: Icon,
@@ -34,6 +37,14 @@ const SensorItem = ({
 export const Sidebar = () => {
   const { current } = useSimulation();
   const { profile, openModal, animalMode } = useAnimalMode();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("로그아웃되었습니다");
+    navigate("/", { replace: true });
+  };
 
   const stateColor = current.state === "normal" ? "text-success" : current.state === "warning" ? "text-warning" : current.state === "device_fault" ? "text-purple-400" : "text-danger";
   const stateLabel = current.state === "normal" ? "Normal (정상)" : current.state === "warning" ? "Warning (경고)" : current.state === "device_fault" ? "Device Fault (장치이상)" : "Critical (위험)";
@@ -105,6 +116,21 @@ export const Sidebar = () => {
           <span className="text-muted-foreground">복귀 기준</span>
           <span className="font-mono text-foreground text-right">3회 연속</span>
         </div>
+      </div>
+
+      <div className="mt-auto pt-3 border-t border-border">
+        {user && (
+          <p className="text-[10px] text-muted-foreground mb-2 truncate" title={user.email ?? ""}>
+            {user.email}
+          </p>
+        )}
+        <button
+          onClick={handleSignOut}
+          className="w-full flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground hover:bg-secondary py-2 rounded-md transition-colors"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          로그아웃
+        </button>
       </div>
     </aside>
   );

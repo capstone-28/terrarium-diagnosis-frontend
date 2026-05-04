@@ -14,14 +14,14 @@ export const StatsPanel = () => {
   const activePolicy = mqttPolicy.find((p) => p.state === current.state) || mqttPolicy[0];
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col xl:flex-row gap-4">
       {/* Statistics */}
-      <div className="sensor-card flex-1">
+      <div className="sensor-card flex-1 min-w-0">
         <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-primary" />
           최근 구간 통계 (30샘플)
         </h3>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {([
             { label: "표면온도", data: stats.surface, unit: "°C" },
             { label: "온열 공기", data: stats.hotAir, unit: "°C" },
@@ -50,7 +50,7 @@ export const StatsPanel = () => {
       </div>
 
       {/* MQTT Policy */}
-      <div className="sensor-card w-80">
+      <div className="sensor-card w-full xl:w-80 min-w-0">
         <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
           <Wifi className="w-4 h-4 text-primary" />
           MQTT 적응형 전송 정책
