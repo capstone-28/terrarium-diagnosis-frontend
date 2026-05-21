@@ -4,6 +4,12 @@ export * from "./node";
 export * from "./heartbeat";
 export * from "./measurement";
 export * from "./dashboard";
+export * from "./dto/common.dto";
+export * from "./dto/heartbeat.dto";
+export * from "./dto/event.dto";
+export * from "./dto/alert.dto";
+export * from "./dto/summary.dto";
+export * from "./dto/fault.dto";
 
 import { nodeApi } from "./node";
 import { heartbeatApi } from "./heartbeat";

@@ -79,14 +79,16 @@ export const AnimalModeProvider = ({ children }: { children: ReactNode }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <AnimalModeContext.Provider value={{
-      animalMode,
-      profile: profiles[animalMode],
-      setAnimalMode,
-      isModalOpen,
-      openModal: () => setIsModalOpen(true),
-      closeModal: () => setIsModalOpen(false),
-    }}>
+    <AnimalModeContext.Provider
+      value={{
+        animalMode,
+        profile: profiles[animalMode],
+        setAnimalMode,
+        isModalOpen,
+        openModal: () => setIsModalOpen(true),
+        closeModal: () => setIsModalOpen(false),
+      }}
+    >
       {children}
     </AnimalModeContext.Provider>
   );
