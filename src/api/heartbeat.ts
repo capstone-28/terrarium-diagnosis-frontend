@@ -9,7 +9,7 @@ export const heartbeatApi = {
       .eq("node_id", node_id)
       .maybeSingle();
 
-    if (!nodeRow) return fail("NODE_NOT_FOUND", `node_id '${node_id}' 없음`);
+    if (!nodeRow) return fail("NODE_NOT_FOUND", `node_id '${node_id}'을 찾을 수 없음`);
 
     const { data: lastFault } = await supabase
       .from("faults")
@@ -34,7 +34,7 @@ export const heartbeatApi = {
       });
     }
 
-    return ok({ node_id, received_at: new Date().toISOString() });
+    return ok({ node_id, received_at: timestamp });
   },
 
   async latest(node_id: string) {
